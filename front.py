@@ -1,49 +1,78 @@
 import streamlit as st
-from docx import Document
 import io
 
-def generate_resume_docx(name, email, role, skills, experience):
-    doc = Document()
-    
-    # Header
-    doc.add_heading(name, level=0)
-    doc.add_paragraph(f"Email: {email} | Role: {role}")
-    
-    # Skills Section
-    doc.add_heading("Technical Skills", level=1)
-    doc.add_paragraph(skills)
-    
-    # Experience Section
-    doc.add_heading("Work Experience / Projects", level=1)
-    doc.add_paragraph(experience)
-    
-    # Save to buffer
-    buffer = io.BytesIO()
-    doc.save(buffer)
-    buffer.seek(0)
-    return buffer
+def generate_professional_resume_html(name, email, phone, linkedin, github, summary, skills, education, experience, projects, certs):
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            body {{ font-family: 'Times New Roman', Times, serif; margin: 30px; color: #000; line-height: 1.4; }}
+            .header {{ text-align: left; border-bottom: 2px solid #1E3A8A; padding-bottom: 10px; margin-bottom: 15px; }}
+            h1 {{ margin: 0; font-size: 24px; color: #1E3A8A; }}
+            .contact-info {{ font-size: 12px; color: #333; margin-top: 5px; }}
+            h2 {{ font-size: 14px; color: #1E3A8A; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin-top: 15px; text-transform: uppercase; }}
+            p, li {{ font-size: 12px; }}
+            ul {{ margin: 5px 0; padding-left: 20px; }}
+            .item-header {{ font-weight: bold; font-size: 12px; display: flex; justify-content: space-between; }}
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>{name}</h1>
+            <div class="contact-info">
+                Email: {email} | Mobile: {phone} | <a href="{linkedin}">LinkedIn</a> | <a href="{github}">GitHub</a>
+            </div>
+        </div>
 
-# Streamlit UI Component
-st.subheader("📄 CareerShield AI Resume Generator")
+        <h2>Professional Summary</h2>
+        <p>{summary}</p>
+
+        <h2>Skills & Impact Proof</h2>
+        <p>{skills}</p>
+
+        <h2>Education</h2>
+        <p>{education}</p>
+
+        <h2>Experience</h2>
+        <p>{experience.replace('\n', '<br>')}</p>
+
+        <h2>Projects</h2>
+        <p>{projects.replace('\n', '<br>')}</p>
+
+        <h2>Certifications</h2>
+        <p>{certs.replace('\n', '<br>')}</p>
+    </body>
+    </html>
+    """
+    return html_content
+
+# Streamlit UI
+st.subheader("📄 Professional Resume Generator (ATS-Ready)")
 
 col1, col2 = st.columns(2)
 with col1:
-    name = st.text_input("Full Name")
-    email = st.text_input("Email Address")
-    role = st.text_input("Target Job Role", value="MERN Stack Developer")
+    name = st.text_input("Full Name", value="")
+    email = st.text_input("Email", value="")
+    phone = st.text_input("Mobile", value="")
+    linkedin = st.text_input("LinkedIn URL", value="")
+    github = st.text_input("GitHub URL", value="")
 
 with col2:
-    skills = st.text_area("Skills (Comma Separated)", "React.js, Node.js, Express, MongoDB, Tailwind CSS")
-    experience = st.text_area("Experience / Key Projects", "Developed CareerShield AI voice interview agent...")
+    summary = st.text_area("", "Full-Stack MERN & AI Developer with hands-on experience building and deploying 3+ production-grade web applications capable of supporting 1,000+ active user requests...")
+    skills = st.text_area("Skills & Tech Stack", "• Languages: JavaScript (ES6+), HTML5, CSS3, Python<br>• Frameworks: React.js, Node.js, Express, MongoDB, Tailwind CSS")
 
-if st.button("Generate & Download Resume"):
-    if name and email:
-        resume_file = generate_resume_docx(name, email, role, skills, experience)
-        st.download_button(
-            label="📥 Download Resume (.docx)",
-            data=resume_file,
-            file_name=f"{name.replace(' ', '_')}_Resume.docx",
-            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        )
-    else:
-        st.error("Please fill in Name and Email!")
+education = st.text_area("Education", "<b>Punjab Technical University</b> | Punjab, India<br>Master of Computer Applications (Aug 2025 - May 2027*)")
+experience = st.text_area("Experience", "<b>Sensation Software Solutions</b> | MERN Stack Trainee / Developer | June 2026 - July 2026<br>• Architected and deployed full-stack MERN applications optimized for 5,000+ simultaneous users.")
+projects = st.text_area("Projects", "<b>Movie Dashboard (Recommendation Platform):</b> Developed full-stack dynamic recommendation engine.")
+certs = st.text_area("Certifications", "• MERN Stack: Industrial Certification (Grade A+) - Sensation Software Solutions (July 2026)")
+
+if st.button("Generate Professional Resume"):
+    resume_html = generate_professional_resume_html(name, email, phone, linkedin, github, summary, skills, education, experience, projects, certs)
+    st.download_button(
+        label="📥 Download Resume (.doc)",
+        data=resume_html,
+        file_name=f"{name.replace(' ', '_')}_Resume.doc",
+        mime="application/msword"
+    )
