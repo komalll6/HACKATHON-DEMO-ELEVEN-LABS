@@ -15,14 +15,13 @@ def generate_professional_resume_html(name, email, phone, linkedin, github, summ
             h2 {{ font-size: 14px; color: #1E3A8A; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin-top: 15px; text-transform: uppercase; }}
             p, li {{ font-size: 12px; }}
             ul {{ margin: 5px 0; padding-left: 20px; }}
-            .item-header {{ font-weight: bold; font-size: 12px; display: flex; justify-content: space-between; }}
         </style>
     </head>
     <body>
         <div class="header">
             <h1>{name}</h1>
             <div class="contact-info">
-                Email: {email} | Mobile: {phone} | <a href="{linkedin}">LinkedIn</a> | <a href="{github}">GitHub</a>
+                Email: {email} | Mobile: {phone} | LinkedIn: {linkedin} | GitHub: {github}
             </div>
         </div>
 
@@ -33,22 +32,22 @@ def generate_professional_resume_html(name, email, phone, linkedin, github, summ
         <p>{skills}</p>
 
         <h2>Education</h2>
-        <p>{education}</p>
+        <p>{education.replace('\\n', '<br>')}</p>
 
         <h2>Experience</h2>
-        <p>{experience.replace('\n', '<br>')}</p>
+        <p>{experience.replace('\\n', '<br>')}</p>
 
         <h2>Projects</h2>
-        <p>{projects.replace('\n', '<br>')}</p>
+        <p>{projects.replace('\\n', '<br>')}</p>
 
         <h2>Certifications</h2>
-        <p>{certs.replace('\n', '<br>')}</p>
+        <p>{certs.replace('\\n', '<br>')}</p>
     </body>
     </html>
     """
     return html_content
 
-# Streamlit UI
+# Streamlit UI - Blank Fields for Custom Input
 st.subheader("📄 Professional Resume Generator (ATS-Ready)")
 
 col1, col2 = st.columns(2)
@@ -60,19 +59,22 @@ with col1:
     github = st.text_input("GitHub URL", value="")
 
 with col2:
-    summary = st.text_area("", "Full-Stack MERN & AI Developer with hands-on experience building and deploying 3+ production-grade web applications capable of supporting 1,000+ active user requests...")
-    skills = st.text_area("Skills & Tech Stack", "• Languages: JavaScript (ES6+), HTML5, CSS3, Python<br>• Frameworks: React.js, Node.js, Express, MongoDB, Tailwind CSS")
+    summary = st.text_area("Professional Summary", value="")
+    skills = st.text_area("Skills & Tech Stack", value="")
 
-education = st.text_area("Education", "<b>Punjab Technical University</b> | Punjab, India<br>Master of Computer Applications (Aug 2025 - May 2027*)")
-experience = st.text_area("Experience", "<b>Sensation Software Solutions</b> | MERN Stack Trainee / Developer | June 2026 - July 2026<br>• Architected and deployed full-stack MERN applications optimized for 5,000+ simultaneous users.")
-projects = st.text_area("Projects", "<b>Movie Dashboard (Recommendation Platform):</b> Developed full-stack dynamic recommendation engine.")
-certs = st.text_area("Certifications", "• MERN Stack: Industrial Certification (Grade A+) - Sensation Software Solutions (July 2026)")
+education = st.text_area("Education", value="")
+experience = st.text_area("Experience", value="")
+projects = st.text_area("Projects", value="")
+certs = st.text_area("Certifications", value="")
 
 if st.button("Generate Professional Resume"):
-    resume_html = generate_professional_resume_html(name, email, phone, linkedin, github, summary, skills, education, experience, projects, certs)
-    st.download_button(
-        label="📥 Download Resume (.doc)",
-        data=resume_html,
-        file_name=f"{name.replace(' ', '_')}_Resume.doc",
-        mime="application/msword"
-    )
+    if name and email:
+        resume_html = generate_professional_resume_html(name, email, phone, linkedin, github, summary, skills, education, experience, projects, certs)
+        st.download_button(
+            label="📥 Download Resume (.doc)",
+            data=resume_html,
+            file_name=f"{name.replace(' ', '_')}_Resume.doc",
+            mime="application/msword"
+        )
+    else:
+        st.warning("Please fill in at least Full Name and Email!")
