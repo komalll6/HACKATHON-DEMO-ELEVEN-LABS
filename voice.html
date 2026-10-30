@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Voice Assistant</title>
+</head>
+<body>
+
+    <h1>My Voice Assistant</h1>
+
+    <button onclick="startListening()">
+        🎤 Start Listening
+    </button>
+
+    <h3 id="output">Say something...</h3>
+
+    <script>
+        // Speech Recognition
+        const recognition =
+            new (window.SpeechRecognition ||
+            window.webkitSpeechRecognition)();
+
+        recognition.lang = "en-US";
+        recognition.continuous = false;
+
+        function startListening() {
+            recognition.start();
+        }
+
+        // Convert voice into text
+        recognition.onresult = function(event) {
+
+            const speech = event.results[0][0].transcript;
+
+            document.getElementById("output").innerText =
+                "You said: " + speech;
+
+            assistantResponse(speech);
+        };
+
+        // Assistant response
+        function assistantResponse(message) {
+
+            let response = "";
+
+            if (message.toLowerCase().includes("hello")) {
+                response = "Hello! How can I help you?";
+            }
+            else if (message.toLowerCase().includes("your name")) {
+                response = "I am your JavaScript voice assistant.";
+            }
+            else if (message.toLowerCase().includes("time")) {
+                response = "The current time is " +
+                    new Date().toLocaleTimeString();
+            }
+            else if (message.toLowerCase().includes("date")) {
+                response = "Today's date is " +
+                    new Date().toLocaleDateString();
+            }
+            else {
+                response = "Sorry, I don't understand.";
+            }
+
+            speak(response);
+        }
+
+        // Text to Speech
+        function speak(text) {
+
+            const speech = new SpeechSynthesisUtterance(text);
+
+            speech.lang = "en-US";
+            speech.rate = 1;
+            speech.pitch = 1;
+
+            window.speechSynthesis.speak(speech);
+        }
+
+    </script>
+
+</body>
+</html>
