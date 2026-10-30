@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerShield AI - Voice Mock Interview Test</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen flex flex-col items-center justify-center p-6">
+
+    <div class="max-w-xl w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl text-center">
+        <h1 class="text-2xl font-bold mb-2 text-indigo-400">CareerShield AI Interviewer</h1>
+        <p class="text-slate-400 text-sm mb-6">
+            Click the voice widget below to start your live mock interview session. Test your responses to resume gap questions in real-time!
+        </p>
+
+        <!-- Instructions Box -->
+        <div class="bg-slate-800/50 border border-slate-700/60 rounded-xl p-4 text-left text-xs text-slate-300 space-y-2 mb-8">
+            <p class="font-semibold text-white">💡 Instructions to test:</p>
+            <p>1. Make sure your laptop microphone is connected.</p>
+            <p>2. Click the floating chat/mic button that appears on the screen.</p>
+            <p>3. Allow browser microphone access when prompted.</p>
+        </div>
+
+        <div class="text-xs text-slate-500">
+            Powered by ElevenLabs Conversational AI & CareerShield Engine
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ELEVENLABS CONVERSATIONAL AI WIDGET SCRIPT -->
+    <!-- ========================================== -->
+    <!-- Apni ElevenLABS Agent ID ko yahan replace karein -->
+<elevenlabs-convai agent-id="agent_2201m665wsz2fp3vxzjdrw17kben"></elevenlabs-convai>
+<script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+
+</body>
+</html>
