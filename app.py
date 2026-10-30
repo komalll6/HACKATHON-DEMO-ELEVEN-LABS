@@ -99,7 +99,7 @@ if st.button("Start Voice Interview Preparation"):
             st.session_state["parsed_data"] = parsed_data
             st.success("Resume Parsed Successfully!")
 
-        # Vapi Web SDK Script Integration with Error Catching
+        # Vapi Web SDK Script Integration with Correct Escaped Braces
         vapi_html = f"""
         <div style="text-align: center; margin-top: 20px;">
             <button id="vapi-start-btn" style="background-color: #4F46E5; color: white; padding: 12px 24px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">
@@ -123,7 +123,7 @@ if st.button("Start Voice Interview Preparation"):
                         }}
                     }}
                 }});
-            } catch (err) {{
+            }} catch (err) {{
                 console.error("Vapi Initialization Error:", err);
                 document.getElementById("vapi-status").innerText = "Status: SDK Error!";
                 document.getElementById("vapi-status").style.color = "#EF4444";
@@ -154,7 +154,7 @@ transcript_input = st.text_area("Paste Interview Transcript (or auto-fetch via w
 
 if st.button("Generate Detailed Evaluation Report"):
     with st.spinner("Evaluating Performance..."):
-        report = evaluate_evaluate_interview_report = evaluate_interview(transcript_input, resume_text) if 'evaluate_interview' in globals() else evaluate_interview(transcript_input, resume_text)
+        report = evaluate_interview(transcript_input, resume_text)
         
         st.metric("Overall Performance Rating", f"{report.get('overall_score', 0)} / 10")
         
