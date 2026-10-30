@@ -99,7 +99,7 @@ if st.button("Start Voice Interview Preparation"):
             st.session_state["parsed_data"] = parsed_data
             st.success("Resume Parsed Successfully!")
 
-        # Vapi Web SDK Script Integration in Python Streamlit
+        # Vapi Web SDK Script Integration with Error Catching
         vapi_html = f"""
         <div style="text-align: center; margin-top: 20px;">
             <button id="vapi-start-btn" style="background-color: #4F46E5; color: white; padding: 12px 24px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">
@@ -110,22 +110,38 @@ if st.button("Start Voice Interview Preparation"):
 
         <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"></script>
         <script>
-            const vapi = window.vapiSDK.run({{
-                apiKey: "{VAPI_PUBLIC_KEY}",
-                assistant: "{VAPI_ASSISTANT_ID}",
-                assistantOverrides: {{
-                    variableValues: {{
-                        candidate_skills: "{', '.join(parsed_data.get('candidate_skills', []))}",
-                        skill_gaps: "{', '.join(parsed_data.get('skill_gaps', []))}",
-                        target_role: "{parsed_data.get('target_role', target_role)}"
+            let vapiInstance = null;
+            try {{
+                vapiInstance = window.vapiSDK.run({{
+                    apiKey: "{VAPI_PUBLIC_KEY}",
+                    assistant: "{VAPI_ASSISTANT_ID}",
+                    assistantOverrides: {{
+                        variableValues: {{
+                            candidate_skills: "{', '.join(parsed_data.get('candidate_skills', []))}",
+                            skill_gaps: "{', '.join(parsed_data.get('skill_gaps', []))}",
+                            target_role: "{parsed_data.get('target_role', target_role)}"
+                        }}
                     }}
-                }}
-            }});
+                }});
+            } catch (err) {{
+                console.error("Vapi Initialization Error:", err);
+                document.getElementById("vapi-status").innerText = "Status: SDK Error!";
+                document.getElementById("vapi-status").style.color = "#EF4444";
+            }}
 
             document.getElementById("vapi-start-btn").addEventListener("click", () => {{
-                vapi.start();
-                document.getElementById("vapi-status").innerText = "Status: Connecting & Listening...";
-                document.getElementById("vapi-status").style.color = "#10B981";
+                if (vapiInstance) {{
+                    try {{
+                        vapiInstance.start();
+                        document.getElementById("vapi-status").innerText = "Status: Connecting & Listening...";
+                        document.getElementById("vapi-status").style.color = "#10B981";
+                    }} catch (callErr) {{
+                        console.error("Call start error:", callErr);
+                        alert("Could not start call. Check microphone permissions.");
+                    }}
+                }} else {{
+                    alert("Vapi SDK not initialized properly.");
+                }}
             }});
         </script>
         """
@@ -138,7 +154,7 @@ transcript_input = st.text_area("Paste Interview Transcript (or auto-fetch via w
 
 if st.button("Generate Detailed Evaluation Report"):
     with st.spinner("Evaluating Performance..."):
-        report = evaluate_interview(transcript_input, resume_text)
+        report = evaluate_evaluate_interview_report = evaluate_interview(transcript_input, resume_text) if 'evaluate_interview' in globals() else evaluate_interview(transcript_input, resume_text)
         
         st.metric("Overall Performance Rating", f"{report.get('overall_score', 0)} / 10")
         
